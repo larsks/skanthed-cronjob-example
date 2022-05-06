@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app: postgres
+
+resources:
+- deployments/postgres.yaml
+- pvc/postgres.yaml
+- services/postgres.yaml
+
+secretGenerator:
+  - name: pg-config
+    envs:
+      - secrets/pg.env
+
+generatorOptions:
+  disableNameSuffixHash: true

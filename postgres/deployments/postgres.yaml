@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: docker.io/postgres:14
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: pg-config
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: pg-data
+              mountPath: /var/lib/postgresql
+      volumes:
+        - name: pg-data
+          persistentVolumeClaim:
+            claimName: pg-data
